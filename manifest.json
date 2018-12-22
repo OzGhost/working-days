@@ -1,0 +1,13 @@
+{
+  "name": "working days",
+  "version": "1.0",
+  "description": "for fun guys",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["bg.js"]
+    }
+  ],
+  "manifest_version": 2
+}
