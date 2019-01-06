@@ -17,12 +17,12 @@
   box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 12px 0 rgba(0,0,0,0.19);
   transform: rotate(0deg);
   width: 400px;
-  height: 600px;
+  height: 341px;
 }
 
 .fixed-frame {
   width: 400px;
-  height: 400px;
+  height: 341px;
   padding: 0;
   margin: 0;
   border: 0;
@@ -38,9 +38,32 @@
   padding: 0;
 }
 
+.ctrl-buttons:after,
+.cfg-half:after {
+  content: "";
+  display: block;
+  clear: both;
+  height: 0;
+}
+
+.cfg-half > div {
+  display: inline-block;
+  float: left;
+  width: 50%;
+  box-sizing: border-box;
+  border: 0;
+  padding: 0 2px;
+  margin: 0;
+}
+
 .cfg-header {
   background: #00cc99;
   cursor: pointer;
+}
+
+.cfg-body {
+  margin: 0;
+  padding: 10px 16px;
 }
 
 #cfg-container .cfg-header .cfg-header__title {
@@ -101,8 +124,12 @@
   cursor: pointer;
 }
 
+.cfg-except__btn > button:hover {
+  box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 12px 0 rgba(0,0,0,0.19);
+}
+
 .cfg-input-block {
-  margin: 10px 16px;
+  margin: 10px 0;
 }
 .cfg-except .cfg-input-block {
   margin: 0;
@@ -116,12 +143,12 @@
 .cfg-input-block > input {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid grey;
+  border: 1px solid lightgrey;
   padding: 8px 12px;
 }
 
 .cfg-except li {
-  border: 1px dashed grey;
+  border-bottom: 1px dashed grey;
   margin-bottom: 4px;
 }
 
@@ -146,4 +173,33 @@
 }
 .cfg-except__el p span {
   color: red;
+}
+
+.ctrl-buttons button {
+  height: 40px;
+  width: 50%;
+  box-sizing: border-box;
+  float: left;
+  border: 0;
+  font-size: 18px;
+  background: transparent;
+  outline-offset: -3px;
+}
+
+#commit {
+  outline: 1px dashed #00cc99;
+  color: #00cc99;
+}
+#commit:hover {
+  background: #00cc99;
+  color: white;
+}
+
+#rollback {
+  outline: 1px dashed #ff5050;
+  color: #ff5050;
+}
+#rollback:hover {
+  background: #ff5050;
+  color: white;
 }
