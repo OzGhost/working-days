@@ -528,7 +528,7 @@
   }
 
   var b = document.createElement('BUTTON')
-  b.appendChild(document.createTextNode('Click me !!!'));
+  b.appendChild(document.createTextNode('Knock'));
   b.addEventListener('click', function(){
     _this.visit();
     document.body.removeChild(b);
@@ -537,4 +537,34 @@
   _this.pin(b, 0);
 })();
 
+(function(){
+  var c = document.createElement('BUTTON');
+  c.innerHTML = 'CFG';
+  c.style.position = "fixed";
+  c.style.bottom = "30px";
+  c.style.right = "0";
+  c.style['z-index'] = 1000;
+
+  var box = document.createElement('DIV');
+  box.style.position = "fixed";
+  box.style.bottom = "100px";
+  box.style.right = "0";
+  box.style['z-index'] = "1000";
+  loadBoxContent(box);
+
+  c.addEventListener('click', function(){
+    window.kit.cfg.set("wdc", {
+      lowerBound: new Date("2018-03-01T00:00:00"),
+      upperBound: new Date("2018-03-23T23:59:59")
+    });
+  });
+
+  document.body.appendChild(c);
+  document.body.appendChild(box);
+
+  function loadBoxContent(box) {
+    var flabel = document.createElement('LABEL');
+    flabel.innerHTML = "From: ";
+  }
+})();
 
