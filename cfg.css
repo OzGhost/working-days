@@ -11,18 +11,18 @@
   box-shadow: -4px 0 10px 0 rgba(0,0,0,0.2), -4px 0 12px 0 rgba(0,0,0,0.19);
   transform: rotate(-90deg);
   transform-origin: 0% 100%;
-  transition: .5s ease;
+  transition: transform .5s ease;
 }
 #cfg-container.open {
   box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 12px 0 rgba(0,0,0,0.19);
   transform: rotate(0deg);
-  width: 400px;
-  height: 341px;
+  width: auto;
+  height: auto;
 }
 
 .fixed-frame {
   width: 400px;
-  height: 341px;
+  height: auto;
   padding: 0;
   margin: 0;
   border: 0;
@@ -131,7 +131,7 @@
 .cfg-input-block {
   margin: 10px 0;
 }
-.cfg-except .cfg-input-block {
+#cfg-excepts .cfg-input-block {
   margin: 0;
 }
 
@@ -147,7 +147,11 @@
   padding: 8px 12px;
 }
 
-.cfg-except li {
+#cfg-excepts {
+  max-height: 300px;
+  overflow-y: auto;
+}
+#cfg-excepts li {
   border-bottom: 1px dashed grey;
   margin-bottom: 4px;
 }
