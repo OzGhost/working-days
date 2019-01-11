@@ -1,31 +1,4 @@
 'use strict';
-(function(){
-  function Configuration() {
-    var _this = this;
-
-    _this.store = {};
-
-    _this.get = function(key) {
-      return key ? _this.store[_this.keyToString(key)] : undefined;
-    };
-
-    _this.keyToString = function(key) {
-      return Object.prototype.toString.call(key);
-    };
-
-    _this.set = function(key, val) {
-      _this.store[_this.keyToString(key)] = val;
-    };
-
-    return {
-      get: _this.get,
-      set: _this.set
-    }
-  }
-
-  window.kit = window.kit || {};
-  window.kit.cfg = window.kit.cfg || new Configuration();
-})();
 
 (function(){
   function WorkingDateCounter () {
@@ -41,65 +14,73 @@
     var NINETEEN_THIRTY = 1170;
     var WHOLE_DAY = 1440;
 
+    _this.cook = function(rawCfg) {
+      return {
+        lowerBound: rawCfg.lowerBound ? new Date(rawCfg.lowerBound) : undefined,
+        upperBound: rawCfg.upperBound ? new Date(rawCfg.upperBound) : undefined,
+        excepts: _this.cookExceptions(rawCfg.excepts)
+      };
+    };
+  
+    _this.cookExceptions = function(rawExceptions) {
+      if ( ! rawExceptions) {
+        return {};
+      }
+      var rs = {};
+      var entries = Object.entries(rawExceptions);
+      var len = entries.length;
+      for (var i = 0; i < len; i++) {
+        rs[entries[i][0]] = [
+          new Date(entries[i][1][0]),
+          new Date(entries[i][1][1])
+        ];
+      }
+      return rs;
+    };
+
     _this.count = function(start, end) {
       _this.minutes = 0;
+      _this.cfg = {};
+      chrome.storage.local.get(["cfg"], function(storage) {
+        var rawCfg = storage.cfg || {};
+        _this.cfg = _this.cook(rawCfg);
 
-      var adjustedStart = _this.getInRangeStart(start);
-      var adjustedEnd = _this.getInRangeEnd(end);
-
-      _this.start = _this.getLocaleTime(adjustedStart);
-      _this.end = _this.getLocaleTime(adjustedEnd);
-      _this.startMID = _this.minuteInDay(adjustedStart);
-      _this.endMID = _this.minuteInDay(adjustedEnd);
-      _this.beginningDay = adjustedStart.getDay();
-      _this.endingDay = adjustedEnd.getDay();
-      _this.excluded = _this.getExcludedRanges();
-
-      if (test)
-        console.log(
-          start,
-          start.toLocaleString(),
-          end,
-          end.toLocaleString()
-        );
-      if (test)
-        console.log(" adjusted: ",
-          adjustedStart,
-          _this.start,
-          adjustedStart.toLocaleString(),
-          adjustedEnd,
-          _this.end,
-          adjustedEnd.toLocaleString(),
-          _this.startMID,
-          _this.endMID,
-          _this.beginningDay,
-          _this.endingDay
-        );
-
-      if (_this.end - _this.start > 0) {
-        if (_this.withinSingleDay()) {
-          _this.minutes += _this.inDayCount(
-                                            _this.start,
-                                            _this.end,
-                                            _this.beginningDay,
-                                            _this.start - _this.startMID
-                            );
-        } else {
-          _this.minutes += _this.inDayCount(
-                                            _this.start,
-                                            _this.start + WHOLE_DAY,
-                                            _this.beginningDay,
-                                            _this.start - _this.startMID
-                            );
-          _this.minutes += _this.inDayCount(
-                                            _this.end - _this.endMID,
-                                            _this.end,
-                                            _this.endingDay,
-                                            _this.end - _this.endMID
-                            );
-          _this.countTheRemainingDays_v2();
+        var adjustedStart = _this.getInRangeStart(start);
+        var adjustedEnd = _this.getInRangeEnd(end);
+  
+        _this.start = _this.getLocaleTime(adjustedStart);
+        _this.end = _this.getLocaleTime(adjustedEnd);
+        _this.startMID = _this.minuteInDay(adjustedStart);
+        _this.endMID = _this.minuteInDay(adjustedEnd);
+        _this.beginningDay = adjustedStart.getDay();
+        _this.endingDay = adjustedEnd.getDay();
+        _this.excluded = _this.getExcludedRanges();
+  
+        if (_this.end - _this.start > 0) {
+          if (_this.withinSingleDay()) {
+            _this.minutes += _this.inDayCount(
+                                              _this.start,
+                                              _this.end,
+                                              _this.beginningDay,
+                                              _this.start - _this.startMID
+                              );
+          } else {
+            _this.minutes += _this.inDayCount(
+                                              _this.start,
+                                              _this.start + WHOLE_DAY,
+                                              _this.beginningDay,
+                                              _this.start - _this.startMID
+                              );
+            _this.minutes += _this.inDayCount(
+                                              _this.end - _this.endMID,
+                                              _this.end,
+                                              _this.endingDay,
+                                              _this.end - _this.endMID
+                              );
+            _this.countTheRemainingDays_v2();
+          }
         }
-      }
+      });
 
       return {
         getMinutes: _this.getMinutes
@@ -159,7 +140,7 @@
     }
 
     _this.getConfig = function(key, fallback) {
-      var cfg = window.kit.cfg.get("wdc")
+      var cfg = _this.cfg;
       return cfg ? (cfg[key] || fallback) : fallback;
     }
 
@@ -328,21 +309,6 @@
     };
 
     _this.countTheRemainingDays = function() {
-      /*
-      var weekDayIndicate = _this.beginningDay;
-      var remainingMinutes = _this.end - _this.start;
-      remainingMinutes -= _this.endMID;
-      remainingMinutes -= WHOLE_DAY - _this.startMID;
-      var remainingDays = Math.floor(remainingMinutes / WHOLE_DAY);
-      for (var i = 0; i < remainingDays; i++) {
-        weekDayIndicate++;
-        if (weekDayIndicate > 6)
-          weekDayIndicate = 0;
-        if (weekDayIndicate != 0 && weekDayIndicate != 6) {
-          _this.minutes += ONE_DATE_MINUTES;
-        }
-      }
-      */
       console.error("calling legacy code");
     };
 
@@ -530,41 +496,10 @@
   var b = document.createElement('BUTTON')
   b.appendChild(document.createTextNode('Knock'));
   b.addEventListener('click', function(){
-    _this.visit();
-    document.body.removeChild(b);
-    //_this.calculateIssue(b, 'AF-24020');
+    //_this.visit();
+    //document.body.removeChild(b);
+    _this.calculateIssue(b, 'AF-24020');
   });
   _this.pin(b, 0);
-})();
-
-(function(){
-  var c = document.createElement('BUTTON');
-  c.innerHTML = 'CFG';
-  c.style.position = "fixed";
-  c.style.bottom = "30px";
-  c.style.right = "0";
-  c.style['z-index'] = 1000;
-
-  var box = document.createElement('DIV');
-  box.style.position = "fixed";
-  box.style.bottom = "100px";
-  box.style.right = "0";
-  box.style['z-index'] = "1000";
-  loadBoxContent(box);
-
-  c.addEventListener('click', function(){
-    window.kit.cfg.set("wdc", {
-      lowerBound: new Date("2018-03-01T00:00:00"),
-      upperBound: new Date("2018-03-23T23:59:59")
-    });
-  });
-
-  document.body.appendChild(c);
-  document.body.appendChild(box);
-
-  function loadBoxContent(box) {
-    var flabel = document.createElement('LABEL');
-    flabel.innerHTML = "From: ";
-  }
 })();
 
