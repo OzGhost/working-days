@@ -496,9 +496,9 @@
   var b = document.createElement('BUTTON')
   b.appendChild(document.createTextNode('Knock'));
   b.addEventListener('click', function(){
-    //_this.visit();
-    //document.body.removeChild(b);
-    _this.calculateIssue(b, 'AF-24020');
+    _this.visit();
+    document.body.removeChild(b);
+    //_this.calculateIssue(b, 'AF-24020');
   });
   _this.pin(b, 0);
 })();
