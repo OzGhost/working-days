@@ -1,5 +1,4 @@
 'use strict';
-
 (function(){
   function WorkingDateCounter () {
     var _this = this;
@@ -40,7 +39,6 @@
 
     _this.count = function(start, end) {
       _this.minutes = 0;
-      _this.cfg = {};
       chrome.storage.local.get(["cfg"], function(storage) {
         var rawCfg = storage.cfg || {};
         _this.cfg = _this.cook(rawCfg);
@@ -55,6 +53,7 @@
         _this.beginningDay = adjustedStart.getDay();
         _this.endingDay = adjustedEnd.getDay();
         _this.excluded = _this.getExcludedRanges();
+        console.log("cout << got pre-excluded: ", _this.excluded);
   
         if (_this.end - _this.start > 0) {
           if (_this.withinSingleDay()) {
@@ -79,6 +78,7 @@
                               );
             _this.countTheRemainingDays_v2();
           }
+          console.log("cout << counted: ",_this.minutes);
         }
       });
 
@@ -88,11 +88,13 @@
     }
 
     _this.getExcludedRanges = function() {
-      var exc = _this.getConfig("except", []);
+      var exc = _this.getConfig("excepts", []);
+      console.log("cout << got post exc: ", exc);
       var rs = [];
-      var ilen = exc.length;
-      for (var i = 0; i < ilen; i++) {
-        var ranges = _this.splitRangeToInDayRanges(exc[i][0], exc[i][1]);
+      var excEntries = Object.entries(exc);
+      var len = excEntries.length;
+      for (var i = 0; i < len; i++) {
+        var ranges = _this.splitRangeToInDayRanges(excEntries[i][1][0], excEntries[i][1][1]);
         var jlen = ranges.length;
         for (var j = 0; j < jlen; j++) {
           rs[rs.length] = ranges[j];
@@ -141,6 +143,7 @@
 
     _this.getConfig = function(key, fallback) {
       var cfg = _this.cfg;
+      console.log("cout << got config: ", cfg, key, cfg[key]);
       return cfg ? (cfg[key] || fallback) : fallback;
     }
 
@@ -171,6 +174,7 @@
       if (dayOfWeek == 0 || dayOfWeek == 6)
         return 0;
       var countable = _this.getCountablePairs(start, end);
+      console.log("cout << got coutable: ", countable);
       var countableInMinutes = _this.toMinutes(countable, beginningOfDate);
       var len = countableInMinutes.length;
       var rs = 0;
@@ -184,15 +188,16 @@
       var queue = [];
       queue[0] = [start, end];
       var ilen = _this.excluded.length;
+      console.log("cout << got excluded: ", _this.excluded);
       for (var i = 0; i < ilen; i++) {
-        //console.log("excluded: ", i, _this.excluded[i], "queue: ", queue);
+        console.log("excluded: ", i, _this.excluded[i], "queue: ", queue);
         var subQueue = [];
         var jlen = queue.length;
         for (var j = 0; j < jlen; j++) {
-          //console.log("queue: ", j, queue[j], "subQueue: ", subQueue);
+          console.log("queue: ", j, queue[j], "subQueue: ", subQueue);
           var splitted = _this.getCountableRanges(queue[j], _this.excluded[i]);
           var klen = splitted.length;
-          //console.log("splitted: ", splitted);
+          console.log("splitted: ", splitted);
           for (var k = 0; k < klen; k++) {
             subQueue[subQueue.length] = splitted[k];
           }
@@ -496,9 +501,9 @@
   var b = document.createElement('BUTTON')
   b.appendChild(document.createTextNode('Knock'));
   b.addEventListener('click', function(){
-    _this.visit();
-    document.body.removeChild(b);
-    //_this.calculateIssue(b, 'AF-24020');
+    //_this.visit();
+    //document.body.removeChild(b);
+    _this.calculateIssue(b, 'AF-24332');
   });
   _this.pin(b, 0);
 })();

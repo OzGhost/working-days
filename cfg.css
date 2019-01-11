@@ -8,6 +8,7 @@
   overflow: hidden;
   height: 45px;
   width: 26px;
+  background: white;
   box-shadow: -4px 0 10px 0 rgba(0,0,0,0.2), -4px 0 12px 0 rgba(0,0,0,0.19);
   transform: rotate(-90deg);
   transform-origin: 0% 100%;
@@ -191,7 +192,7 @@
 }
 
 #commit {
-  outline: 1px dashed #00cc99;
+  outline: 1px dashed #00cc99 !important;
   color: #00cc99;
 }
 #commit:hover {
@@ -200,7 +201,7 @@
 }
 
 #rollback {
-  outline: 1px dashed #ff5050;
+  outline: 1px dashed #ff5050 !important;
   color: #ff5050;
 }
 #rollback:hover {
