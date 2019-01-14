@@ -37,7 +37,7 @@
       return rs;
     };
 
-    _this.count = function(start, end) {
+    _this.count = function(start, end, callback) {
       _this.minutes = 0;
       chrome.storage.local.get(["cfg"], function(storage) {
         var rawCfg = storage.cfg || {};
@@ -53,7 +53,6 @@
         _this.beginningDay = adjustedStart.getDay();
         _this.endingDay = adjustedEnd.getDay();
         _this.excluded = _this.getExcludedRanges();
-        console.log("cout << got pre-excluded: ", _this.excluded);
   
         if (_this.end - _this.start > 0) {
           if (_this.withinSingleDay()) {
@@ -78,18 +77,13 @@
                               );
             _this.countTheRemainingDays_v2();
           }
-          console.log("cout << counted: ",_this.minutes);
+          callback(_this.minutes);
         }
       });
-
-      return {
-        getMinutes: _this.getMinutes
-      };
     }
 
     _this.getExcludedRanges = function() {
       var exc = _this.getConfig("excepts", []);
-      console.log("cout << got post exc: ", exc);
       var rs = [];
       var excEntries = Object.entries(exc);
       var len = excEntries.length;
@@ -143,7 +137,6 @@
 
     _this.getConfig = function(key, fallback) {
       var cfg = _this.cfg;
-      console.log("cout << got config: ", cfg, key, cfg[key]);
       return cfg ? (cfg[key] || fallback) : fallback;
     }
 
@@ -174,7 +167,6 @@
       if (dayOfWeek == 0 || dayOfWeek == 6)
         return 0;
       var countable = _this.getCountablePairs(start, end);
-      console.log("cout << got coutable: ", countable);
       var countableInMinutes = _this.toMinutes(countable, beginningOfDate);
       var len = countableInMinutes.length;
       var rs = 0;
@@ -188,16 +180,12 @@
       var queue = [];
       queue[0] = [start, end];
       var ilen = _this.excluded.length;
-      console.log("cout << got excluded: ", _this.excluded);
       for (var i = 0; i < ilen; i++) {
-        console.log("excluded: ", i, _this.excluded[i], "queue: ", queue);
         var subQueue = [];
         var jlen = queue.length;
         for (var j = 0; j < jlen; j++) {
-          console.log("queue: ", j, queue[j], "subQueue: ", subQueue);
           var splitted = _this.getCountableRanges(queue[j], _this.excluded[i]);
           var klen = splitted.length;
-          console.log("splitted: ", splitted);
           for (var k = 0; k < klen; k++) {
             subQueue[subQueue.length] = splitted[k];
           }
@@ -392,7 +380,8 @@
   _this.visitIssue = function(node) {
     var tag = document.createElement('span');
     tag.innerHTML = '&nbsp;><';
-    tag.addEventListener('click', function() {
+    tag.addEventListener('click', function(e) {
+      e.preventDefault();
       _this.calculateIssue(tag, node.title);
     });
     node.parentNode.appendChild(tag);
@@ -427,7 +416,7 @@
     .then(function(rs){
       var statusHistories = _this.getStatusHistories(rs);
       var ranges = _this.getRanges(statusHistories);
-      callback(_this.toMinutes(ranges));
+      _this.toMinutes(ranges, callback);
     });
   }
 
@@ -473,15 +462,16 @@
     return result;
   }
 
-  _this.toMinutes = function(ranges) {
-    var minutes = 0;
+  _this.toMinutes = function(ranges, callback) {
     var len = ranges.length;
     for (var i = 0; i < len; i++) {
-      minutes += _this.wdc.count(
-        new Date(ranges[i][0]), new Date(ranges[i][1])
-      ).getMinutes();
+      _this.wdc.count(
+        new Date(ranges[i][0]), new Date(ranges[i][1]),
+        function(counted){
+          callback(counted);
+        }
+      );
     }
-    return minutes;
   }
 
   _this.pin = function(tag, offset) {
@@ -501,9 +491,9 @@
   var b = document.createElement('BUTTON')
   b.appendChild(document.createTextNode('Knock'));
   b.addEventListener('click', function(){
-    //_this.visit();
-    //document.body.removeChild(b);
-    _this.calculateIssue(b, 'AF-24332');
+    _this.visit();
+    document.body.removeChild(b);
+    //_this.calculateIssue(b, 'AF-24332');
   });
   _this.pin(b, 0);
 })();
