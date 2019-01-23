@@ -3,6 +3,7 @@
 (function(){
   chrome.storage.local.get(["cfg"], function(storage) {
     var rawCfg = storage.cfg || {};
+    rawCfg.excepts = rawCfg.excepts || {};
 
     function IDProvider() {
       var _this = this;

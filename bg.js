@@ -408,6 +408,8 @@
   }
 
   _this.calculateSubIssue = function(key, callback) {
+    if (key !== "AF-24915")
+      return;
     var link = _this.taskDetailURI.replace('{x}', key);
     fetch(link)
     .then(function(e){
@@ -465,6 +467,7 @@
   _this.toMinutes = function(ranges, callback) {
     var len = ranges.length;
     for (var i = 0; i < len; i++) {
+      console.log("cout << range: ", ranges[i]);
       _this.wdc.count(
         new Date(ranges[i][0]), new Date(ranges[i][1]),
         function(counted){
@@ -491,9 +494,9 @@
   var b = document.createElement('BUTTON')
   b.appendChild(document.createTextNode('Knock'));
   b.addEventListener('click', function(){
-    _this.visit();
-    document.body.removeChild(b);
-    //_this.calculateIssue(b, 'AF-24332');
+    //_this.visit();
+    //document.body.removeChild(b);
+    _this.calculateIssue(b, 'AF-24734');
   });
   _this.pin(b, 0);
 })();

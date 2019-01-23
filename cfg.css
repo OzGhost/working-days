@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css?family=Cantarell');
 
 #cfg-container {
+  font-family: 'Cantarell', sans-serif !important;
   position: fixed;
   bottom: 30px;
   right: 30px;
@@ -8,11 +10,15 @@
   overflow: hidden;
   height: 45px;
   width: 26px;
+  z-index: 390;
   background: white;
   box-shadow: -4px 0 10px 0 rgba(0,0,0,0.2), -4px 0 12px 0 rgba(0,0,0,0.19);
   transform: rotate(-90deg);
   transform-origin: 0% 100%;
   transition: all .5s ease;
+}
+#cfg-container * {
+  font-family: 'Cantarell', sans-serif !important;
 }
 #cfg-container.open {
   box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 12px 0 rgba(0,0,0,0.19);
