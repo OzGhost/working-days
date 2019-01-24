@@ -38,8 +38,8 @@
     };
 
     _this.count = function(start, end, callback) {
-      _this.minutes = 0;
       chrome.storage.local.get(["cfg"], function(storage) {
+        _this.minutes = 0;
         var rawCfg = storage.cfg || {};
         _this.cfg = _this.cook(rawCfg);
 
@@ -77,8 +77,8 @@
                               );
             _this.countTheRemainingDays_v2();
           }
-          callback(_this.minutes);
         }
+        callback(_this.minutes);
       });
     }
 
@@ -352,17 +352,14 @@
   var _this = {};
   window.kit = window.kit || {};
   _this.wdc = window.kit.wdc;
-  
-  if ( ! _this.wdc) {
-    window.alert("cout << wdc not found!");
-    return;
-  }
-
   _this.host = 'https://jira.axonivy.com/jira/rest/api/2';
   _this.subtaskURI = _this.host + '/issue/{x}/subtask';
   _this.taskDetailURI = _this.host + '/issue/{x}?expand=changelog';
 
-  _this.test = false;
+  if ( ! _this.wdc) {
+    window.alert("cout << wdc not found!");
+    return;
+  }
 
   _this.visit = function() {
     var nodes = document.querySelectorAll('a.js-key-link');
@@ -397,6 +394,7 @@
       var subIssuesKeys = rs.map(function(e){return e.key;});
       var takenMinutes = 0;
       var len = subIssuesKeys.length;
+      var t = 0;
       for (var i = 0; i < len; i++) {
         _this.calculateSubIssue(subIssuesKeys[i], function(taken){
           takenMinutes += taken;
@@ -405,6 +403,9 @@
         });
       }
     })
+    .catch(function(){
+      el.innerHTML = " (o0) ";
+    });
   }
 
   _this.calculateSubIssue = function(key, callback) {
@@ -416,7 +417,11 @@
     .then(function(rs){
       var statusHistories = _this.getStatusHistories(rs);
       var ranges = _this.getRanges(statusHistories);
-      _this.toMinutes(ranges, callback);
+      _this.ranges2Minutes(ranges, callback);
+    })
+    .catch(function(){
+      callback(0);
+      console.warn("cout << crashed while load key: " + key);
     });
   }
 
@@ -462,15 +467,12 @@
     return result;
   }
 
-  _this.toMinutes = function(ranges, callback) {
+  _this.ranges2Minutes = function(ranges, callback) {
     var len = ranges.length;
     for (var i = 0; i < len; i++) {
-      _this.wdc.count(
-        new Date(ranges[i][0]), new Date(ranges[i][1]),
-        function(counted){
-          callback(counted);
-        }
-      );
+      _this.wdc.count(new Date(ranges[i][0]), new Date(ranges[i][1]), function(out){
+        callback(out);
+      });
     }
   }
 
@@ -480,12 +482,6 @@
     tag.style.right = offset + 'px';
     tag.style['z-index'] = 100000;
     document.body.appendChild(tag);
-  }
-
-  _this.log = function(l) {
-    var tag = document.createElement('TEXTAREA');
-    tag.value = l;
-    _this.pin(tag, 200);
   }
 
   var b = document.createElement('BUTTON')
