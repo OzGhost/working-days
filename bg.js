@@ -379,7 +379,7 @@
 
   _this.visitIssue = function(node) {
     var tag = document.createElement('span');
-    tag.innerHTML = '&nbsp;><';
+    tag.innerHTML = '&nbsp;[][][]';
     tag.addEventListener('click', function(e) {
       e.preventDefault();
       _this.calculateIssue(tag, node.title);
@@ -408,8 +408,6 @@
   }
 
   _this.calculateSubIssue = function(key, callback) {
-    if (key !== "AF-24915")
-      return;
     var link = _this.taskDetailURI.replace('{x}', key);
     fetch(link)
     .then(function(e){
