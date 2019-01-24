@@ -65,7 +65,7 @@
           } else {
             _this.minutes += _this.inDayCount(
                                               _this.start,
-                                              _this.start + WHOLE_DAY,
+                                              _this.start + (WHOLE_DAY - _this.startMID),
                                               _this.beginningDay,
                                               _this.start - _this.startMID
                               );
@@ -467,7 +467,6 @@
   _this.toMinutes = function(ranges, callback) {
     var len = ranges.length;
     for (var i = 0; i < len; i++) {
-      console.log("cout << range: ", ranges[i]);
       _this.wdc.count(
         new Date(ranges[i][0]), new Date(ranges[i][1]),
         function(counted){

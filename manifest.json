@@ -5,7 +5,7 @@
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
     {
-      "matches": ["https://jira.axonivy.com/jira/secure/RapidBoard.jspa?rapidView=85&view=planning.nodetail*"],
+      "matches": ["https://jira.axonivy.com/*"],
       "css": ["cfg.css"],
       "js": ["bg.js", "cfg.js"]
     }
