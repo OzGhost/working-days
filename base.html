@@ -3,68 +3,26 @@
   <head>
     <meta charset="UTF8"/>
     <link href="cfg.css" rel="stylesheet"/>
+    <link href="blow.css" rel="stylesheet"/>
   </head>
   <body>
-    <!--
-    <div id="cfg-container" class="open">
-      <div class="fixed-frame">
-        <div class="cfg-header" id="trigger">
-          <p class="cfg-header__title">WDC Configuration</p>
-          <span class="cfg-header__trigger">CFG</span>
-        </div>
-        <div class="cfg-body">
-          <div class="cfg-half">
-            <div class="cfg-input-block">
-              <label>Lower bound:</label>
-              <input type="text" id="lower_bound"/>
-            </div>
-            <div class="cfg-input-block">
-              <label>Upper bound:</label>
-              <input type="text" id="upper_bound"/>
-            </div>
-          </div>
-          <div class="cfg-input-block">
-            <label>Except(s):</label>
-            <ul class="cfg-except">
-              <li>
-                <div class="cfg-except__el">
-                  <p>2018-01-27 07:00:49 <span>to</span> 2018-03-19 09:00:11</p>
-                  <span>&times;</span>
-                </div>
-              </li>
-              <li>
-                <div class="cfg-except__el">
-                  <p>2018-01-27 07:00:49 <span>to</span> 2018-03-19 09:00:11</p>
-                  <span>&times;</span>
-                </div>
-              </li>
-              <li>
-                <div class="cfg-except__input-block">
-                  <div class="cfg-input-block">
-                    <label>From:</label>
-                    <input type="text" id="except_from"/>
-                  </div>
-                  <div class="cfg-input-block">
-                    <label>To:</label>
-                    <input type="text" id="except_to"/>
-                  </div>
-                  <div class="cfg-except__btn">
-                    <button id="except-commit">+</button>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="cfg-footer">
-          <div class="ctrl-buttons">
-            <button id="rollback">Cancel</button>
-            <button id="commit">Save</button>
-          </div>
+    <div class="container open" id="tt">
+      <div class="slider">
+        <div class="fix">
+          <br/>
+          <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
         </div>
       </div>
     </div>
-    -->
-    <script src="cfg.js"></script>
+    <script>
+      var tag = document.getElementById("tt");
+      tag.addEventListener("click", function(){
+        if (tag.className.includes("open")) {
+          tag.className = "container";
+        } else {
+          tag.className = "container open";
+        }
+      });
+    </script>
   </body>
 </html>

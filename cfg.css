@@ -6,33 +6,38 @@
   bottom: 30px;
   right: 30px;
   padding: 0;
-  margin: 0;
+  max-height: 20px;
+  width: 50px;
   overflow: hidden;
-  height: 45px;
-  width: 26px;
+  margin: 0;
   z-index: 390;
-  background: white;
-  box-shadow: -4px 0 10px 0 rgba(0,0,0,0.2), -4px 0 12px 0 rgba(0,0,0,0.19);
-  transform: rotate(-90deg);
-  transform-origin: 0% 100%;
-  transition: all .5s ease;
+  transition: .5s ease;
 }
 #cfg-container * {
   font-family: 'Cantarell', sans-serif !important;
 }
 #cfg-container.open {
-  box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 12px 0 rgba(0,0,0,0.19);
-  transform: rotate(0deg);
-  width: auto;
-  height: auto;
+  width: 448px;
+  max-height: 600px;
+  padding: 24px;
 }
 
 .fixed-frame {
-  width: 400px;
-  height: auto;
   padding: 0;
   margin: 0;
   border: 0;
+  width: 400px;
+  height: auto;
+  background: white;
+  box-sizing: border-box;
+  transform-origin: 15px 16px;
+  transform: rotate(-90deg);
+  transition: .5s ease;
+  box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 12px 0 rgba(0,0,0,0.19);
+}
+
+.open .fixed-frame {
+  transform: rotate(0deg);
 }
 
 #cfg-container p {
